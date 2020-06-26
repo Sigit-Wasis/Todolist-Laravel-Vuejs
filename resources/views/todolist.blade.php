@@ -15,6 +15,10 @@
 	<!-- Vue JS -->
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
+	<!-- Axios -->
+	<!-- Axios merupakan library opensource yang digunakan untuk request data melalui http.  -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 	<!-- CSS -->
 	<style>
 		body {
@@ -104,8 +108,28 @@
 				openForm: function() {
 					$('#modal-form').modal('show');
 				},
+				
 				saveTodoList: function() {
-					alert( this.content )
+					var form_data = new FormData();
+					form_data.append('content', this.content);
+					axios.post(" {{ url('api/todolist/create') }}", form_data)
+						.then(response =>  {
+							var item = response.data;
+							alert(item.message);
+						})
+						.catch(error => {
+							alert('Terjadi kesalahan pada sistem');
+						})	
+				},
+
+				getDataList: function() {
+					axios.get(" {{ url('api/todolist/list') }}")
+						.then(response => {
+							this.data_list = response.data;
+						})
+						.catch(error => {
+							alert("Terjadi kesalahan pada sistem");
+						})
 				}
 			}
 		});
