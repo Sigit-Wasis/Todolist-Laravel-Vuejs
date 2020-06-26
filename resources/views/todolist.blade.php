@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Form Todo List Laravel and Vue Js</title>
+	<title>Todo List Laravel and Vue Js</title>
 
 	<!-- Jquery -->
 	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -33,16 +33,59 @@
 	<div class="container">
 		<!-- container vue js -->
 		<div id="app">
+
+			<!-- modal form tambah -->
+			<div class="modal fade" id="modal-form">
+				<div class="modal-dialog">
+				    <div class="modal-content">
+				      	<div class="modal-header">
+				        	<h5 class="modal-title" id="exampleModalLabel">To Do List Form</h5>
+				        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          		<span aria-hidden="true">&times;</span>
+				        	</button>
+				      	</div>
+				      	<div class="modal-body">
+				        	<div class="form-group">
+				        		<label for="">Content</label>
+				        		<textarea v-model="content" class="form-control" rows="5"></textarea>
+				        	</div>
+				      	</div>
+				      	<div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					        <!-- action ketika save todo -->
+				        	<button type="button" @click="saveTodoList" class="btn btn-primary">Save Todo</button>
+				      	</div>
+				    </div>
+				</div>
+			</div>
+
 			<div class="row">
 				<div class="col-sm-3"></div>
-				<div class="col-sm-6">
-					<div class="text-right mb-3 btn-sm">
-						<a href="javascript: ;" class="btn btn-primary">Tambah</a>
+					<div class="col-sm-6">
+						<!-- button tambah -->
+						<div class="text-right mb-3 btn-sm">
+							<a href="javascript: ;" @click="openForm" class="btn btn-primary">Tambah</a>
+						</div>
+
+						<!-- content -->
+						<div class="todolist-wrapper">
+							<table class="table table-striped table->bordered">
+								<tbody>
+									<!-- looping data_list -->
+									<tr v-for="item in data_list">
+										<!-- @ pembeda dari blade pada laravel -->
+										<td>@{{ item.content }}</td>
+									</tr>
+									<!-- menghitung panjang data_list dengan length -->
+									<!-- jika length data_list kosong atau nol -->
+									<!-- simbol (!) tanda seru yang artinya tidak false berarti sekarang nilainya true -->
+									<tr v-if="!data_list.length">
+										<td>Data masih kosong</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
-					<div class="todolist-wrapper">
-						
-					</div>
-				</div>
 				<div class="col-sm-3"></div>
 			</div>
 		</div>
@@ -54,13 +97,16 @@
 		var vue = new Vue ({
 			el: '#app',
 			data: {
-
+				data_list: [],
+				content: ""
 			},
 			methods: {
-				// // function didalam vuejs
-				// updateData: function() {
-
-				// }
+				openForm: function() {
+					$('#modal-form').modal('show');
+				},
+				saveTodoList: function() {
+					alert( this.content )
+				}
 			}
 		});
 	</script>
