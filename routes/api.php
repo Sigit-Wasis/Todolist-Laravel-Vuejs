@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('todolist/delete/{id}', 'ApiTodoListController@getDelete');
+Route::get('todolist/read/{id}', 'ApiTodoListController@getRead');
+Route::post('todolist/delete/{id}', 'ApiTodoListController@getDelete');
 Route::post('todolist/update/{id}', 'ApiTodoListController@postUpdate');
 Route::post('todolist/create', 'ApiTodoListController@postCreate');
 Route::get('todolist/list', 'ApiTodoListController@getList');

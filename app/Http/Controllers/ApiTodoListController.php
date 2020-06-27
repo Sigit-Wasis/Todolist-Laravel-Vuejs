@@ -43,4 +43,10 @@ class ApiTodoListController extends Controller
 			->delete();
 		return response()->json(['status' => true, 'message' => 'Data berhasil Dihapus!']);
 	}
+
+    // method get id
+    public function getRead($id) {
+        $row = DB::table('todolist')->where("id", $id)->first();
+        return response()->json($row);
+    }
 }

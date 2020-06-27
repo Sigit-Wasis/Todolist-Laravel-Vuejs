@@ -28,6 +28,11 @@
 			border: 1px solid #cccccc;
 			min-height: 100px;
 		}
+
+		i {
+			font-size: 13px;
+			color: orange;
+		}
 	</style>
 
 </head>
@@ -68,7 +73,7 @@
 					<div class="col-sm-6">
 						<!-- button tambah -->
 						<div class="text-right mb-3 btn-sm">
-							<a href="javascript: ;" @click="openForm" class="btn btn-primary">Tambah</a>
+							<a href="javascript: ;" @click="openForm" class="btn btn-success">Tambah</a>
 						</div>
 
 						<!-- content -->
@@ -78,7 +83,10 @@
 									<!-- looping data_list -->
 									<tr v-for="item in data_list">
 										<!-- @ pembeda dari blade pada laravel -->
-										<td>@{{ item.content }}</td>
+										<td>@{{ item.content }} 
+											<a href="javascript:;" @click="editData(item.id)" class="btn btn-primary btn-sm">Edit</a>
+											<a href="javascript:;" @click="deleteData(item.id)" class="btn btn-danger btn-sm">Delete</a> 
+										</td>
 									</tr>
 									<!-- menghitung panjang data_list dengan length -->
 									<!-- jika length data_list kosong atau nol -->
@@ -89,6 +97,8 @@
 								</tbody>
 							</table>
 						</div>
+						
+						<i>Created By: Sigit wasis subekti</i>
 					</div>
 				<div class="col-sm-3"></div>
 			</div>
@@ -107,30 +117,80 @@
 
 			data: {
 				data_list: [],
-				content: ""
+				content: "",
+				id: ""
 			},
 			methods: {
 				openForm: function() {
 					$('#modal-form').modal('show');
 				},
 				
+				editData: function(id) {
+					this.id = id;
+
+					axios.get(" {{ url ('api/todolist/read') }}/" + this.id)
+						.then(response => {
+							var item = response.data;
+							this.content = item.content;
+
+							$('#modal-form').modal('show');
+						})
+						.catch(error => {
+							alert('Terjadi kesalahan pada sistem!');
+						})
+				},
+
+				deleteData: function(id) {
+					if (confirm('Apakah data ini akan dihapus?')) {
+						axios.post(" {{ url('api/todolist/delete') }}/" + id)
+							.then(response =>  {
+								alert(response.data.message);
+								this.getDataList();
+							})
+							.catch(error => {
+								alert('Terjadi kesalahan pada sistem!' + error);
+							})
+					}		
+				},
+
 				// menambahkan data todolist
+				// dan mengupdate data todolist
 				saveTodoList: function() {
 					var form_data = new FormData();
 					form_data.append('content', this.content);
-					axios.post(" {{ url('api/todolist/create') }}", form_data)
-						.then(response =>  {
-							var item = response.data;
-							alert(item.message);
-							this.getDataList();
-						})
-						.catch(error => {
-							alert('Terjadi kesalahan pada sistem');
-						})	
-						// method yang terakhir dijalankan pada axios
-						.finally(() =>  {
-							$('#modal-form').modal('hide');
-						})
+
+					if (this.id) {
+						// update data
+						axios.post(" {{ url('api/todolist/update') }}/" + this.id, form_data)
+							.then(response =>  {
+								var item = response.data;
+								alert(item.message);
+								this.getDataList();
+							})
+							.catch(error => {
+								alert('Terjadi kesalahan pada sistem');
+							})	
+							// method yang terakhir dijalankan pada axios
+							.finally(() =>  {
+								$('#modal-form').modal('hide');
+							})
+
+					} else {
+						// create data
+						axios.post(" {{ url('api/todolist/create') }}", form_data)
+							.then(response =>  {
+								var item = response.data;
+								alert(item.message);
+								this.getDataList();
+							})
+							.catch(error => {
+								alert('Terjadi kesalahan pada sistem');
+							})	
+							// method yang terakhir dijalankan pada axios
+							.finally(() =>  {
+								$('#modal-form').modal('hide');
+							})
+					}
 				},
 
 				// menampilkan data todolist
