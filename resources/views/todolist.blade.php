@@ -76,6 +76,11 @@
 							<a href="javascript: ;" @click="openForm" class="btn btn-success">Tambah</a>
 						</div>
 
+						<div class="text-center mb-3">
+							<!-- Onchange merupakan suatu event yang akan dijalankan ketika suatu field kita ubah -->
+							<input type="text" v-model="search" placeholder="Cari disini" @change="findData" class="form-control">
+						</div>
+
 						<!-- content -->
 						<div class="todolist-wrapper">
 							<table class="table table-striped table->bordered">
@@ -118,11 +123,16 @@
 			data: {
 				data_list: [],
 				content: "",
-				id: ""
+				id: "",
+				search: ""
 			},
 			methods: {
 				openForm: function() {
 					$('#modal-form').modal('show');
+				},
+
+				findData: function() {
+					this.getDataList();
 				},
 				
 				editData: function(id) {
@@ -195,7 +205,7 @@
 
 				// menampilkan data todolist
 				getDataList: function() {
-					axios.get(" {{ url('api/todolist/list') }}")
+					axios.get(" {{ url('api/todolist/list') }}?search=" + this.search)
 						.then(response => {
 							this.data_list = response.data;
 						})

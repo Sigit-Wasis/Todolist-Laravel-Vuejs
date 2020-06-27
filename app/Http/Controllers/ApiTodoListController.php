@@ -9,7 +9,13 @@ class ApiTodoListController extends Controller
 {
     // menampilkan data (Read)
     public function getList() {
-    	$result = DB::table("todolist")->orderby('id', "desc")->get();
+    	$result = DB::table("todolist");
+
+        if (\request('search')) {
+            $result->where("content", "like", "%".request('search')."%");
+        }
+            $result = $result->orderby('id', "desc")->get();
+
     	return response()->json($result);
     }
 
