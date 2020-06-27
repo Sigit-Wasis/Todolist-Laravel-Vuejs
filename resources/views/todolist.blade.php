@@ -100,6 +100,11 @@
 	<script>
 		var vue = new Vue ({
 			el: '#app',
+			// parameter yang pertama di load
+			mounted() {
+				this.getDataList();
+			},
+
 			data: {
 				data_list: [],
 				content: ""
@@ -109,6 +114,7 @@
 					$('#modal-form').modal('show');
 				},
 				
+				// menambahkan data todolist
 				saveTodoList: function() {
 					var form_data = new FormData();
 					form_data.append('content', this.content);
@@ -116,12 +122,18 @@
 						.then(response =>  {
 							var item = response.data;
 							alert(item.message);
+							this.getDataList();
 						})
 						.catch(error => {
 							alert('Terjadi kesalahan pada sistem');
 						})	
+						// method yang terakhir dijalankan pada axios
+						.finally(() =>  {
+							$('#modal-form').modal('hide');
+						})
 				},
 
+				// menampilkan data todolist
 				getDataList: function() {
 					axios.get(" {{ url('api/todolist/list') }}")
 						.then(response => {
